@@ -1,0 +1,5 @@
+nana,50
+Car,62
+Juana,70
+Robert,38
+arthur,40
