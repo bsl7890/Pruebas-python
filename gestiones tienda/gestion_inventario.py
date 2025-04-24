@@ -98,7 +98,7 @@ def opcion5():
     input("presione cualquier tecla para continuar.......")
 def opcion6():
     print("Seleccionaste la opción 6: Salir")
-    exit()
+    return "salir"
 def otros():
     print("Opción no válida.")
     input("presione cualquier tecla para continuar.......")
@@ -129,11 +129,16 @@ def menu_inventario():
             print("| 6. Salir                                 |")
             print("|------------------------------------------|")
             opcion = int(input("Ingrese su opción: "))
+            opcionseleccionada = list_opciones(opcion)
             list_opciones(opcion)
+            if opcionseleccionada == "salir":
+                break
+            if opcion > 6:
+                print("Opción no válida. Por favor, seleccione una opción válida.")
+                continue
         except ValueError:
             print("Entrada no válida. Por favor, ingrese un número.")
             input("presione cualquier tecla para continuar.......")
             continue
 
-menu_inventario()
 

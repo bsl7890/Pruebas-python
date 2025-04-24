@@ -160,7 +160,7 @@ def opcion4():
         print("Empleado no encontrado.")
 def opcion5 ():
     print("Opcion 5 seleccionada: Salir")
-    exit()
+    return "salir"
 def otros1():
     return "Opción no válida"
 opcione = {
@@ -189,8 +189,8 @@ def gestion_Empleados():
             print("|-------------------------------------|")
             opcion = int(input("Ingrese su opción: "))
             opcion_seleccionada = opciones2(opcion)
-            if opcion == 5:
-                exit()
+            if opcion_seleccionada == "salir":
+                break
             elif opcion > 5:
                 print("Opción no válida. Por favor, seleccione una opción válida.")
                 input("presione cualquier tecla para continuar.......")
@@ -201,4 +201,3 @@ def gestion_Empleados():
             input("presione cualquier tecla para continuar.......")
             continue
 
-gestion_Empleados()
