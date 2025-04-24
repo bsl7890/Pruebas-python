@@ -10,31 +10,36 @@ def opcion1():
             if cantidad_producto <= 0:
                 print("La cantidad debe de ser mayor que 0.")
                 input("presione cualquier tecla para continuar.......")
-                return
+                continue
             precio_producto = float(input("Ingrese el precio del producto: "))
             if precio_producto <= 0:
                 print("El precio debe de ser mayor que 0.")
                 input("presione cualquier tecla para continuar.......")
-                return
+                continue
+            categoria_producto = input("Ingrese la categoría del producto: ")
             productos.append({
                 "nombre": nombre_producto,
                 "cantidad": cantidad_producto,
-                "precio": precio_producto
+                "precio": precio_producto,
+                "categoria": categoria_producto
             })
             print(f"Productos registrados: {productos}")
             input("presione cualquier tecla para continuar.......")
-            return
+            break
         except ValueError:
             print("Entrada no válida. Por favor, ingrese un número.")
             input("presione cualquier tecla para continuar.......")
-            return
+            continue
 def opcion2():
     print("Seleccionaste la opción 2: Ver todos los productos")
     if not productos:
         print("No hay productos registrados.")
     else:
         for producto in productos:
-            print(f"1. Nombre: {producto['nombre']}\n2. Cantidad: {producto['cantidad']}\n3. Precio: {producto['precio']}")
+            print(f"1. Nombre: {producto['nombre']}\n2. Cantidad: {producto['cantidad']}\n3. Precio: {producto['precio']}\n4. Categoria: {producto['categoria']}")
+            print("--------------------------------------------------")
+    print("--------------------------------------------------")
+    print("Total de productos registrados:", len(productos))
     input("presione cualquier tecla para continuar.......")
 def opcion3():
     print("Seleccionaste la opción 3: Buscar producto por nombre")
@@ -60,7 +65,7 @@ def opcion4():
                     if nueva_cantidad <= 0:
                         print("La cantidad debe de ser mayor que 0.")
                         input("Presione cualquier tecla para continuar.......")
-                        return
+                        continue
                     producto["cantidad"] = nueva_cantidad
                     print(f"Cantidad actualizada a: {producto['cantidad']}")
                     print(f"Producto actualizado: {producto}")
@@ -69,7 +74,7 @@ def opcion4():
                 except ValueError:
                     print("Entrada no válida. Por favor, ingrese un número.")
                     input("presione cualquier tecla para continuar.......")
-                    return
+                    continue
     if not encontrado:
         print("Producto no encontrado.")
 def opcion5():
@@ -78,10 +83,16 @@ def opcion5():
     encontrado = False
     for producto in productos:
         if producto["nombre"].lower() == nombre_buscar.lower():
-            productos.remove(producto)
-            print(f"Producto eliminado: {producto}")
-            encontrado = True
-            break
+            confirmacion = input(f"¿Estás seguro de eliminar {producto['nombre']}? (s/n): ")
+            if confirmacion.lower() == "s":
+                productos.remove(producto)
+                print("Producto eliminado.")            
+                encontrado = True
+                break
+            elif confirmacion.lower() == "n":
+                print("Eliminación cancelada.")
+                encontrado = True
+                break
     if not encontrado:
         print("Producto no encontrado.")
     input("presione cualquier tecla para continuar.......")
@@ -89,7 +100,8 @@ def opcion6():
     print("Seleccionaste la opción 6: Salir")
     exit()
 def otros():
-    return "Opción no válida"
+    print("Opción no válida.")
+    input("presione cualquier tecla para continuar.......")
 opciones = {
     1: opcion1,
     2: opcion2,
@@ -121,7 +133,7 @@ def menu_inventario():
         except ValueError:
             print("Entrada no válida. Por favor, ingrese un número.")
             input("presione cualquier tecla para continuar.......")
-            return
+            continue
 
 menu_inventario()
 
