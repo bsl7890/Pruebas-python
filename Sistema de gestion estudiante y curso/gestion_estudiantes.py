@@ -81,7 +81,20 @@ def opcion5():
 def opcion6():
     print("Seleccionaste la opción 6: Salir")
     return "salir"
+def otros():
+    print("Opción no válida. Por favor, seleccione una opción válida.")
+    input("presione cualquier tecla para continuar.......")
+opciones = {
+    1: opcion1,
+    2: opcion2,
+    3: opcion3,
+    4: opcion4,
+    5: opcion5,
+    6: opcion6
+}
 
+def list_opciones(opcion):
+    return opciones.get(opcion, otros)()
 
 def gestion_Empleados():
     while True:
@@ -96,9 +109,16 @@ def gestion_Empleados():
             print("| 3. Eliminar estudiante              |")
             print("| 4. Buscar estudiante                |")
             print("| 5. Actualizar estudiante            |")
-            print("| 5. Salir                            |")
+            print("| 6. Salir                            |")
             print("|-------------------------------------|")
             opcion = int(int(input("Ingrese su opción: ")))
+            opcion_seleccionada = list_opciones(opcion)
+            if opcion_seleccionada == "salir":
+                break
+            if opcion < 1 or opcion > 6:
+                print("Opción no válida. Por favor, seleccione una opción válida.")
+                input("presione cualquier tecla para continuar.......")
+                continue
         except ValueError:
             print("Entrada no válida. Por favor, ingrese un número.")
             input("presione cualquier tecla para continuar.......")
