@@ -12,7 +12,7 @@ def opcion1():
     estudiante.append({"nombre": nombre,"edad": edad,"curso": curso})
     print(f"Estudiante registrado: {estudiante}")
     input("presione cualquier tecla para continuar.......")
-    gestion_Empleados()
+    menu_estudiantes()
 def opcion2():
     print("Seleccionaste la opción 2: Ver todos los estudiantes")
     if not estudiante:
@@ -27,7 +27,7 @@ def opcion2():
     print("--------------------------------------------------")
     print("Total de estudiantes registrados:", len(estudiante))
     input("presione cualquier tecla para continuar.......")
-    gestion_Empleados()
+    menu_estudiantes()
 def opcion3():
     print("Seleccionaste la opción 3: Eliminar estudiante por nombre")
     nombre_buscar = input("Ingrese el nombre del estudiante a buscar: ")
@@ -43,7 +43,7 @@ def opcion3():
     if not encontrado:
         print("Estudiante no encontrado.")
     input("presione cualquier tecla para continuar.......")
-    gestion_Empleados()
+    menu_estudiantes()
 def opcion4():
     print("Seleccionaste la opción 4: Buscar estudiante por nombre")
     nombre_buscar = input("Ingrese el nombre del estudiante a buscar: ")
@@ -56,7 +56,7 @@ def opcion4():
     if not encontrado:
         print("Estudiante no encontrado.")
     input("presione cualquier tecla para continuar.......")
-    gestion_Empleados()
+    menu_estudiantes()
 def opcion5():
     print("Seleccionaste la opción 5: Actualizar estudiante")
     nombre_buscar = input("Ingrese el nombre del estudiante a buscar: ")
@@ -77,7 +77,7 @@ def opcion5():
     if not encontrado:
         print("Estudiante no encontrado.")
     input("presione cualquier tecla para continuar.......")
-    gestion_Empleados()
+    menu_estudiantes()
 def opcion6():
     print("Seleccionaste la opción 6: Salir")
     return "salir"
@@ -93,10 +93,10 @@ opciones = {
     6: opcion6
 }
 
-def list_opciones(opcion):
-    return opciones.get(opcion, otros)()
+def list_opciones(opcio):
+    return opciones.get(opcio, otros)()
 
-def gestion_Empleados():
+def menu_estudiantes():
     while True:
         os.system("cls")
         try:
@@ -111,7 +111,7 @@ def gestion_Empleados():
             print("| 5. Actualizar estudiante            |")
             print("| 6. Salir                            |")
             print("|-------------------------------------|")
-            opcion = int(int(input("Ingrese su opción: ")))
+            opcion = int(input("Ingrese su opción: "))
             opcion_seleccionada = list_opciones(opcion)
             if opcion_seleccionada == "salir":
                 break
@@ -119,6 +119,7 @@ def gestion_Empleados():
                 print("Opción no válida. Por favor, seleccione una opción válida.")
                 input("presione cualquier tecla para continuar.......")
                 continue
+            opcion_seleccionada()
         except ValueError:
             print("Entrada no válida. Por favor, ingrese un número.")
             input("presione cualquier tecla para continuar.......")

@@ -2,9 +2,10 @@ import gestion_estudiantes
 import gestion_cursos
 import matriculas
 import os
+import sys
 
 def opcion1():
-    return gestion_estudiantes.gestion_Empleados()
+    return gestion_estudiantes.menu_estudiantes()
 def opcion2():
     return gestion_cursos.menu_cursos()
 def opcion3():
@@ -39,9 +40,8 @@ def menu_principal():
             print("|-------------------------------------------------|")
             opcion = int(input("Seleccione una opción: "))
             opcionseleccionada = list_opciones(opcion)
-            list_opciones(opcion)
             if opcionseleccionada == "salir":
-                break
+                    sys.exit(0)
             if opcion< 1 or opcion > 4:
                 print("Opción no válida. Por favor, seleccione una opción válida.")
                 continue

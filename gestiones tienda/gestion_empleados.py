@@ -126,9 +126,10 @@ def opcion3():
     nombre_buscar = input("Ingrese el nombre del empleado a buscar: ")
     encontrado = False
     for empleado in empleados:
-        if empleado["nombre"].lower() == nombre_buscar.lower():  # Comparar sin importar mayúsculas/minúsculas
+        if empleado["nombre"].lower() == nombre_buscar.lower():
             print(f"Empleado encontrado: {empleado}")
             encontrado = True
+            input("Presione cualquier tecla para continuar...")
             gestion_Empleados()
     if not encontrado:
         print("Empleado no encontrado.")

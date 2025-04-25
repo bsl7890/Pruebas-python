@@ -1,5 +1,4 @@
 import os
-
 asignaturas = []
 def opcio1():
     return "Programacion"
