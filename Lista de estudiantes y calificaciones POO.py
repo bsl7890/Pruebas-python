@@ -80,7 +80,7 @@ while True:
         nombre = input("Ingrese el nombre del estudiante: ")
         
         # Buscamos si el estudiante ya existe en la lista
-        for estudiante in estudiantes:
+        for estudiante in estudiantes:  
             if estudiante["nombre"].lower() == nombre.lower():  # Comparamos en minúsculas para evitar problemas de mayúsculas/minúsculas
                 # Si ya existe, le damos la opción de cambiar la nota
                 nueva_nota = int(input(f"\nIngrese la nueva nota para {nombre}: "))
