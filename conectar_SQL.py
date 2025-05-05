@@ -60,7 +60,7 @@ try:
                         deleted BOOLEAN DEFAULT FALSE)""")
     # Si la clave foránea ya existe, la eliminamos antes de crearla de nuevo
     cursor.execute('''ALTER TABLE usuarios
-                    DROP FOREIGN KEY IF EXISTS fk_usuario_tipo_usuario''')
+                    DROP FOREIGN KEY fk_usuario_tipo_usuario''')
 
     # Agregar la clave foránea correctamente
     cursor.execute('''ALTER TABLE usuarios
@@ -116,7 +116,7 @@ try:
                         deleted BOOLEAN DEFAULT FALSE)""")
 
     # Eliminar clave foránea si existe
-    cursor.execute('''ALTER TABLE ventas DROP FOREIGN KEY IF EXISTS fk_usuario_ventas''')
+    cursor.execute('''ALTER TABLE ventas DROP FOREIGN KEY fk_usuario_ventas''')
 
     cursor.execute('''ALTER TABLE ventas
                         ADD CONSTRAINT fk_usuario_ventas
@@ -148,8 +148,8 @@ try:
                         created_by INT, 
                         updated_by INT,
                         deleted BOOLEAN DEFAULT FALSE)""")
-    cursor.execute('''ALTER TABLE detalle_ventas DROP FOREIGN KEY IF EXISTS fk_ventas_detalle_ventas''')
-    cursor.execute('''ALTER TABLE detalle_ventas DROP FOREIGN KEY IF EXISTS fk_productos_detalle_ventas''')
+    cursor.execute('''ALTER TABLE detalle_ventas DROP FOREIGN KEY fk_ventas_detalle_ventas''')
+    cursor.execute('''ALTER TABLE detalle_ventas DROP FOREIGN KEY fk_productos_detalle_ventas''')
 
     cursor.execute('''ALTER TABLE detalle_ventas
                         ADD CONSTRAINT fk_ventas_detalle_ventas
