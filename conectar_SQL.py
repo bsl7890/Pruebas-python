@@ -36,6 +36,11 @@ try:
                         updated_by INT,
                         deleted BOOLEAN DEFAULT FALSE)""")
     conn.commit() 
+
+    cursor.execute('''ALTER TABLE tipo_usuarios
+                        ADD descripcion_tipo VARCHAR(200) NOT NULL AFTER nombre_tipo;
+                        ''')
+    
     print("Tabla tipo_usuarios creada exitosamente.")
     # Crear tabla usuarios si no existe
     #id identificador único
@@ -61,6 +66,13 @@ try:
     # Si la clave foránea ya existe, la eliminamos antes de crearla de nuevo
     cursor.execute('''ALTER TABLE usuarios
                     DROP FOREIGN KEY fk_usuario_tipo_usuario''')
+    
+    cursor.execute('''ALTER TABLE usuarios
+                        CHANGE COLUMN nombre_tipo nombre_usuario VARCHAR(100) NOT NULL;
+                        ''')
+    cursor.execute('''ALTER TABLE usuarios
+                        ADD password VARCHAR(45) NOT NULL AFTER nombre_usuario;
+                        ''')
 
     # Agregar la clave foránea correctamente
     cursor.execute('''ALTER TABLE usuarios
