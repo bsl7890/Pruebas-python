@@ -18,6 +18,18 @@ try:
 
     print("Conexión y selección de base de datos exitosa.")
 
+    def drop_foreign_key_if_exists(cursor, table_name, fk_name):
+        cursor.execute(f"""
+            SELECT CONSTRAINT_NAME 
+            FROM information_schema.TABLE_CONSTRAINTS 
+            WHERE TABLE_SCHEMA = 'sistema_ventas'
+            AND TABLE_NAME = '{table_name}'
+            AND CONSTRAINT_NAME = '{fk_name}'
+            AND CONSTRAINT_TYPE = 'FOREIGN KEY';
+        """)
+        result = cursor.fetchone()
+        if result:
+            cursor.execute(f"ALTER TABLE {table_name} DROP FOREIGN KEY {fk_name};")
     # Crear tabla tipo_usuarios si no existe
     #id identificador único
     #nombre Tipo de usuario (Admin, Cliente)
@@ -35,11 +47,24 @@ try:
                         created_by INT, 
                         updated_by INT,
                         deleted BOOLEAN DEFAULT FALSE)""")
-    conn.commit() 
+    conn.commit()
+    # Verificar si la columna 'descripcion_tipo' ya existe antes de agregarla
+    cursor.execute("""
+        SELECT COUNT(*) 
+        FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = 'sistema_ventas' 
+        AND TABLE_NAME = 'tipo_usuarios' 
+        AND COLUMN_NAME = 'descripcion_tipo';
+    """)
+    columna_existe = cursor.fetchone()[0]
 
-    cursor.execute('''ALTER TABLE tipo_usuarios
-                        ADD descripcion_tipo VARCHAR(200) NOT NULL AFTER nombre_tipo;
+    if columna_existe == 0:
+        cursor.execute('''ALTER TABLE tipo_usuarios
+                            ADD descripcion_tipo VARCHAR(200) NOT NULL AFTER nombre_tipo;
                         ''')
+        print("Columna descripcion_tipo agregada exitosamente.")
+    else:
+        print("La columna descripcion_tipo ya existe. No se agregó nuevamente.")
     
     print("Tabla tipo_usuarios creada exitosamente.")
     # Crear tabla usuarios si no existe
@@ -64,15 +89,44 @@ try:
                         updated_by INT,
                         deleted BOOLEAN DEFAULT FALSE)""")
     # Si la clave foránea ya existe, la eliminamos antes de crearla de nuevo
-    cursor.execute('''ALTER TABLE usuarios
-                    DROP FOREIGN KEY fk_usuario_tipo_usuario''')
+    drop_foreign_key_if_exists(cursor, 'usuarios', 'fk_usuario_tipo_usuario')
     
-    cursor.execute('''ALTER TABLE usuarios
-                        CHANGE COLUMN nombre_tipo nombre_usuario VARCHAR(100) NOT NULL;
+    # Verificar si la columna 'nombre_tipo' aún existe antes de renombrarla
+    cursor.execute("""
+        SELECT COUNT(*) 
+        FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = 'sistema_ventas' 
+        AND TABLE_NAME = 'usuarios' 
+        AND COLUMN_NAME = 'nombre_tipo';
+    """)
+    columna_a_renombrar = cursor.fetchone()[0]
+
+    if columna_a_renombrar == 1:
+        cursor.execute('''ALTER TABLE usuarios
+                            CHANGE COLUMN nombre_tipo nombre_usuario VARCHAR(100) NOT NULL;
                         ''')
-    cursor.execute('''ALTER TABLE usuarios
-                        ADD password VARCHAR(45) NOT NULL AFTER nombre_usuario;
+        print("Columna renombrada a nombre_usuario.")
+    else:
+        print("La columna 'nombre_tipo' ya fue renombrada o no existe.")
+
+    # Verificar si ya existe la columna 'password'
+    cursor.execute("""
+        SELECT COUNT(*) 
+        FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = 'sistema_ventas' 
+        AND TABLE_NAME = 'usuarios' 
+        AND COLUMN_NAME = 'password';
+    """)
+    existe_password = cursor.fetchone()[0]
+
+    if existe_password == 0:
+        cursor.execute('''ALTER TABLE usuarios
+                            ADD password VARCHAR(45) NOT NULL AFTER nombre_usuario;
                         ''')
+        print("Columna password agregada.")
+    else:
+        print("La columna 'password' ya existe.")
+
 
     # Agregar la clave foránea correctamente
     cursor.execute('''ALTER TABLE usuarios
@@ -128,7 +182,7 @@ try:
                         deleted BOOLEAN DEFAULT FALSE)""")
 
     # Eliminar clave foránea si existe
-    cursor.execute('''ALTER TABLE ventas DROP FOREIGN KEY fk_usuario_ventas''')
+    drop_foreign_key_if_exists(cursor, 'ventas', 'fk_usuario_ventas')
 
     cursor.execute('''ALTER TABLE ventas
                         ADD CONSTRAINT fk_usuario_ventas
@@ -160,8 +214,9 @@ try:
                         created_by INT, 
                         updated_by INT,
                         deleted BOOLEAN DEFAULT FALSE)""")
-    cursor.execute('''ALTER TABLE detalle_ventas DROP FOREIGN KEY fk_ventas_detalle_ventas''')
-    cursor.execute('''ALTER TABLE detalle_ventas DROP FOREIGN KEY fk_productos_detalle_ventas''')
+    
+    drop_foreign_key_if_exists(cursor, 'detalle_ventas', 'fk_ventas_detalle_ventas')
+    drop_foreign_key_if_exists(cursor, 'detalle_ventas', 'fk_productos_detalle_ventas')
 
     cursor.execute('''ALTER TABLE detalle_ventas
                         ADD CONSTRAINT fk_ventas_detalle_ventas
