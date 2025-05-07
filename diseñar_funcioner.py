@@ -89,7 +89,7 @@ while True:
         continue
 
 # Saludo personalizado
-saludar("Benjamín", 17)
+saludar("Benjamín", 18)
 
 # Solicita cuántos números se quieren sumar con validación
 while True:
