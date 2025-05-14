@@ -3,7 +3,6 @@ trabajo de POO sobre: Diseñar funciones y
 utilizar estructuras de control
 4°E"""
 
-import os  # Importa el módulo 'os' para usar funciones del sistema, como limpiar la pantalla
 
 # 1) Función que evalúa si un número entero es mayor, menor o igual a 10
 def evaluar_entero(x):
@@ -50,7 +49,6 @@ def sumar_numeros(cantidad):
 
 # Solicita un número entero con validación
 while True:
-    os.system("cls")  # Limpia la pantalla
     try:
         numero = int(input("Ingresa un número entero: "))
         evaluar_entero(numero)
@@ -63,7 +61,6 @@ while True:
 
 # Solicita un número decimal con validación
 while True:
-    os.system("cls")
     try:
         numero_decimal = float(input("Ingresa un número decimal: "))
         evaluar_decimal(numero_decimal)
@@ -76,7 +73,6 @@ while True:
 
 # Solicita la base y la altura del triángulo con validación
 while True:
-    os.system("cls")
     try:
         base = int(input("Ingresa la base del triángulo: "))
         altura = int(input("Ingresa la altura del triángulo: "))
@@ -93,7 +89,6 @@ saludar("Benjamín", 18)
 
 # Solicita cuántos números se quieren sumar con validación
 while True:
-    os.system("cls")
     try:
         cantidad = int(input("¿Cuántos números quieres sumar?: "))
         sumar_numeros(cantidad)
@@ -103,3 +98,4 @@ while True:
         print("Error: Ingresa un número entero válido.")
         input("presione cualquier tecla para continuar.......")
         continue
+        
