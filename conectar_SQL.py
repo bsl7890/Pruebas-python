@@ -202,7 +202,7 @@ try:
     #updated_at Fecha de modificacion
     #created_by Usuario que crea
     #updated_by Usuario que modifica
-    #deleted Borrador logico
+    #deleted Borrador logico.
     cursor.execute("""CREATE TABLE IF NOT EXISTS detalle_ventas (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         venta_id INT,
