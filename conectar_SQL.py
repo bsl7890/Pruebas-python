@@ -151,6 +151,7 @@ try:
     cursor.execute("""CREATE TABLE IF NOT EXISTS productos (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     nombre_producto VARCHAR(100) NOT NULL,
+                    descripcion_producto VARCHAR(200) NOT NULL,
                     precio FLOAT NOT NULL,
                     stock INT NOT NULL,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
