@@ -34,11 +34,11 @@ try:
     sql_vendedor = "INSERT INTO tipo_usuarios (nombre_tipo, descripcion_tipo, created_by, updated_by) VALUES ('Vendedor', 'Usuario encargado de realizar ventas', " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql_vendedor)
     sql_cajero = "INSERT INTO tipo_usuarios (nombre_tipo, descripcion_tipo, created_by, updated_by) VALUES ('Cajero', 'Usuario que realiza cobros y pagos', " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
-    cursor.execute(sql_admin)
+    cursor.execute(sql_cajero)
     sql_cliente = "INSERT INTO tipo_usuarios (nombre_tipo, descripcion_tipo, created_by, updated_by) VALUES ('Cliente', 'Usuario que compra productos', " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
-    cursor.execute(sql_vendedor)
+    cursor.execute(sql_cliente)
     sql_invitado = "INSERT INTO tipo_usuarios (nombre_tipo, descripcion_tipo, created_by, updated_by) VALUES ('Invitado', 'Usuario con acceso limitado', " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
-    cursor.execute(sql_admin)
+    cursor.execute(sql_invitado)
     conn.commit()
     print("Tipos de usuario creados")
 
@@ -52,19 +52,19 @@ try:
     cursor.execute("SELECT id FROM tipo_usuarios WHERE nombre_tipo='Cliente'") # Insertar tipo de usuario Vendedor
     tipo_cliente_id = cursor.fetchone()[0]
     cursor.execute("SELECT id FROM tipo_usuarios WHERE nombre_tipo='Invitado'") # Insertar tipo de usuario Vendedor
-    tipo_ivitado_id = cursor.fetchone()[0]
+    tipo_invitado_id = cursor.fetchone()[0]
     
 
     # 4. Insertar usuarios asociados a tipos
     sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('adminuser', 'admin@example.com', 'admin123', " + str(tipo_admin_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor1', 'ventas1@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor1', 'vendedor@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cajero1', 'ventas2@example.com', 'venta123', " + str(tipo_cajero_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cajero1', 'cajero@example.com', 'cajero123', " + str(tipo_cajero_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cliente1', 'admin@example.com', 'admin123', " + str(tipo_cliente_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cliente1', 'cliente@example.com', 'cliente123', " + str(tipo_cliente_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('invitado1', 'ventas1@example.com', 'venta123', " + str(tipo_ivitado_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('invitado1', 'invitado@example.com', 'invitado123', " + str(tipo_ivitado_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
     conn.commit()
     print("Usuarios creados")
@@ -84,7 +84,7 @@ try:
     print("Productos creados")
 
     # Obtener IDs usuarios para ventas
-    cursor.execute("SELECT id FROM usuarios WHERE nombre_usuario='vendedor1'")
+    cursor.execute("SELECT id FROM usuarios WHERE nombre_usuario='vendedor1'")  
     vendedor1_id = cursor.fetchone()[0]
     cursor.execute("SELECT id FROM usuarios WHERE nombre_usuario='vendedor2'")
     vendedor2_id = cursor.fetchone()[0]
