@@ -58,14 +58,23 @@ try:
     # 4. Insertar usuarios asociados a tipos
     sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('adminuser', 'admin@example.com', 'admin123', " + str(tipo_admin_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor1', 'vendedor@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor1', 'vendedor1@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
     sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cajero1', 'cajero@example.com', 'cajero123', " + str(tipo_cajero_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
     sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cliente1', 'cliente@example.com', 'cliente123', " + str(tipo_cliente_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('invitado1', 'invitado@example.com', 'invitado123', " + str(tipo_invitado_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('invitado2', 'invitado@example.com', 'invitado123', " + str(tipo_invitado_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor2', 'vendedor2@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    cursor.execute(sql)
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor3', 'vendedor3@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    cursor.execute(sql)
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor4', 'vendedor4@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    cursor.execute(sql)
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('vendedor5', 'vendedor5@example.com', 'venta123', " + str(tipo_vendedor_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    cursor.execute(sql)
+    
     conn.commit()
     print("Usuarios creados")
 
