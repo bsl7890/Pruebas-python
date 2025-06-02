@@ -64,7 +64,7 @@ try:
     cursor.execute(sql)
     sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('cliente1', 'cliente@example.com', 'cliente123', " + str(tipo_cliente_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
-    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('invitado1', 'invitado@example.com', 'invitado123', " + str(tipo_ivitado_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
+    sql = "INSERT INTO usuarios (nombre_usuario, correo, password, tipo_usuario_id, created_by, updated_by) VALUES ('invitado1', 'invitado@example.com', 'invitado123', " + str(tipo_invitado_id) + ", " + str(usuario_tecnico_id) + ", " + str(usuario_tecnico_id) + ")"
     cursor.execute(sql)
     conn.commit()
     print("Usuarios creados")
