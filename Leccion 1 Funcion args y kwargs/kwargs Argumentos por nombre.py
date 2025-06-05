@@ -13,7 +13,6 @@ mostrar_info(nombre="Benjamín", edad=18, curso="4° Medio", ciudad = "Santiago"
 # edad: 18
 # curso: 4° Medio
 # ciudad: Santiago
-
 def saludar(**kwargs):
     if "nombre" in kwargs:
         print(f"Hola, {kwargs['nombre']}!")
