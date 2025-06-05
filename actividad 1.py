@@ -1,7 +1,7 @@
 """""Benjamín santander 4° Medio E
 """
 
-# Función para mostrar componentes
+# Función para mostrar componentes recibiendo un parametro de una funcion args que esta dominada como cantidad_componente
 def mostrar_componente(*cantidad_componentes):  
     # Imprime un encabezado
     print("Componentes de la computadora:")
@@ -9,7 +9,7 @@ def mostrar_componente(*cantidad_componentes):
     for componente in cantidad_componentes:
         print(f"- {componente}")
 
-# Función para mostrar nombre y detalles de un componente
+# Función para mostrar nombres y detalles de un componente específico y esta recibiendo dos parametros de una funcion kwargs que esta dominada como detalles
 def detalles_componente(nombre_componente, **detalles):
     # Muestra el nombre del componente
     print(f"Detalles del componente {nombre_componente}:")
@@ -17,7 +17,8 @@ def detalles_componente(nombre_componente, **detalles):
     for clave, valor in detalles.items():
         print(f"{clave}: {valor}")
 
-# Función para ensamblar una computadora con partes y detalles del técnico
+# Función para ensamblar una computadora, recibiendo partes y detalles del técnico
+# Esta función recibe un parametro *args para las partes y dos parametros **kwargs para los detalles del técnico
 def ensamblar_computadora(*partes, **detalles_tecnico):
     # Muestra las partes que se están ensamblando
     print("Ensamblando computadora con las siguientes partes:")
