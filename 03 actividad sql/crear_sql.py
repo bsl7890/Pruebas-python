@@ -146,7 +146,7 @@ try:
             costo DECIMAL(10, 2) NOT NULL,
             stock INT NOT NULL CHECK (stock >= 0),
             descripcion VARCHAR(300),
-            tipo_repuesto VARCHAR(50) NOT NULL CHECK (tipo_repuesto IN ('Fijo', 'Consumible')),
+            tipo_repuesto VARCHAR(50) NOT NULL CHECK (tipo_repuesto IN ('Frenos', 'Aceite', 'Filtros', 'Baterías', 'Neumáticos')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
