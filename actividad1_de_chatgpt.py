@@ -13,7 +13,7 @@ while True:
             print("Ingrese un numero mayor que 1")
             input("Presione cualquier tecla para continuar.....")
             continue
-        # Verificar si el número está fuera del rango
+        # Verificar si el número está fuera del rangos
         if intento < 1 or intento > 100:
             print("El número debe estar entre 1 y 100.")
             continue
