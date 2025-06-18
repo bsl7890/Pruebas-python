@@ -18,7 +18,7 @@ while True:
             print("El número debe estar entre 1 y 100.")
             continue
         
-        # Comparar el número ingresado con el número aleatorio
+        # Comparar el número ingresado con el número aleatorios
         if intento < numero_aleatorio:
             print("Demasiado bajo. Intenta de nuevo.")
         elif intento > numero_aleatorio:
