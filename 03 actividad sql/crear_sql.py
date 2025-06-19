@@ -47,7 +47,6 @@ try:
     cursor.execute("USE GESTION_MANTENIMIENTO")
 
     print("Conexión y selección de base de datos exitosa.")
-
     # Crear tabla tipo_usuarios si no existe
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tipo_usuarios (
@@ -90,9 +89,7 @@ try:
         CREATE TABLE IF NOT EXISTS vehiculos (
             id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
             patente VARCHAR(10) NOT NULL UNIQUE,
-            tipo VARCHAR(50) NOT NULL,
             anio YEAR NOT NULL,
-            estado VARCHAR(20) NOT NULL CHECK (estado IN ('Activo', 'Inactivo', 'En Mantenimiento')),
             kilometraje INT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -107,16 +104,17 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mantenimientos (
             id_mantenimiento INT AUTO_INCREMENT PRIMARY KEY,
-            tipo_mantenimiento VARCHAR(20) NOT NULL CHECK (tipo_mantenimiento IN ('Preventivo', 'Correctivo')),
             fecha DATE NOT NULL,
             id_vehiculo INT NOT NULL,
+            id_usuario INT NOT NULL,
             tecnico_responsable VARCHAR(100) NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
             updated_by INT,
             deleted BOOLEAN DEFAULT FALSE,
-            FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo)
+            FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo),
+            FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
         )
     """)
     print("Tabla mantenimientos creada o ya existe.")
@@ -124,29 +122,27 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mecanicos (
             id_mecanico INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(100) NOT NULL,
-            rut VARCHAR(12) NOT NULL UNIQUE,
+            id_usuario INT NOT NULL,
             especialidad VARCHAR(50) NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
             updated_by INT,
-            deleted BOOLEAN DEFAULT FALSE
-        )
+            deleted BOOLEAN DEFAULT FALSE,
+            FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)            
+       )
     """)
     print("Tabla mecanicos creada o ya existe.")
-
     # Crear tabla repuestos si no existe
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS repuestos (
             id_repuesto INT AUTO_INCREMENT PRIMARY KEY,
             codigo VARCHAR(20) NOT NULL UNIQUE,
             nombre VARCHAR(100) NOT NULL,
-            proveedor VARCHAR(100) NOT NULL,
             costo DECIMAL(10, 2) NOT NULL,
             stock INT NOT NULL CHECK (stock >= 0),
             descripcion VARCHAR(300),
-            tipo_repuesto VARCHAR(50) NOT NULL CHECK (tipo_repuesto IN ('Frenos', 'Aceite', 'Filtros', 'Baterías', 'Neumáticos')),
+            fecha_vencimiento DATE,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
@@ -156,6 +152,149 @@ try:
     """)
     print("Tabla repuestos creada o ya existe.")
 
+    # Crear tabla tipo_repuestos si no existe
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tipo_repuestos (
+            id_tipo_repuesto INT AUTO_INCREMENT PRIMARY KEY,
+            nombre_tipo_repuesto VARCHAR(50) NOT NULL CHECK (nombre_tipo_repuesto IN ('Frenos', 'Aceite', 'Filtros', 'Baterías', 'Neumáticos')),
+            descripcion VARCHAR(300) NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT,
+            updated_by INT,
+            deleted BOOLEAN DEFAULT FALSE
+        )
+    """)
+    print("Tabla tipo_repuestos creada o ya existe.")
+
+    # Alter table  tipo_repuestos
+    cursor.execute("""ALTER TABLE repuestos
+                        ADD COLUMN id_tipo_repuesto INT NOT NULL,
+                        ADD FOREIGN KEY (id_tipo_repuesto) REFERENCES tipo_repuestos(id_tipo_repuesto)
+                            """)
+    print("Columna id_tipo_repuesto añadida a la tabla repuestos.")
+    # Alter table mantenimientos
+    cursor.execute("""ALTER TABLE mantenimientos
+                        ADD COLUMN id_repuesto INT NOT NULL,
+                        ADD FOREIGN KEY (id_repuesto) REFERENCES repuestos(id_repuesto)
+                            """)
+    print("Columna id_repuesto añadida a la tabla mantenimientos.")
+    # Alter table mantenimientos
+    cursor.execute("""ALTER TABLE mantenimientos
+                        ADD COLUMN id_mecanico INT NOT NULL,
+                        ADD FOREIGN KEY (id_mecanico) REFERENCES mecanicos(id_mecanico)
+                   """)
+    print("Columna id_mecanico añadida a la tabla mantenimientos.")
+    print("Todas las tablas y relaciones creadas exitosamente.")
+
+    # Crear personas si no existe
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS personas (
+            rut VARCHAR(12) PRIMARY KEY,
+            nombre VARCHAR(100) NOT NULL,
+            fecha_nacimiento DATE NOT NULL,
+            telefono VARCHAR(15),
+            direccion VARCHAR(255),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT,
+            updated_by INT,
+            deleted BOOLEAN DEFAULT FALSE
+        )
+    """)
+    print("Tabla personas creada o ya existe.")
+    # Alter table usuario para añadir rut
+    cursor.execute("""
+        ALTER TABLE usuario
+        ADD COLUMN rut VARCHAR(12) NOT NULL UNIQUE,
+        ADD FOREIGN KEY (rut) REFERENCES personas(rut)
+    """)
+    # Crear estado_vehiculo si no existe
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS estado_vehiculo (
+            id_estado INT AUTO_INCREMENT PRIMARY KEY,
+            estado VARCHAR(20) NOT NULL CHECK (estado IN ('Activo', 'Inactivo', 'En Mantenimiento')),
+            descripcion VARCHAR(50) NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT,
+            updated_by INT,
+            deleted BOOLEAN DEFAULT FALSE
+        )
+    """)
+
+    # Alter table vehiculos para añadir estado
+    cursor.execute("""
+        ALTER TABLE vehiculos
+        ADD COLUMN id_estado INT NOT NULL,
+        ADD FOREIGN KEY (id_estado) REFERENCES estado_vehiculo(id_estado)
+    """)
+    print("Columna id_estado añadida a la tabla vehiculos.")
+
+    # Crear tipo_vehiculo si no existe
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tipo_vehiculo (
+            id_tipo_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
+            tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('Camión', 'Bus', 'Furgoneta', 'Auto')),
+            descripcion VARCHAR(300) NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT,
+            updated_by INT,
+            deleted BOOLEAN DEFAULT FALSE
+        )
+        """)
+    print("Tabla tipo_vehiculo creada o ya existe.")
+    # Alter table vehiculos para añadir tipo_vehiculo
+    cursor.execute("""
+            ALTER TABLE vehiculos
+            ADD COLUMN id_tipo_vehiculo INT NOT NULL,
+            ADD FOREIGN KEY (id_tipo_vehiculo) REFERENCES tipo_vehiculo(id_tipo_vehiculo)
+        """)
+    print("Columna id_tipo_vehiculo añadida a la tabla vehiculos.")
+
+    # Crear tabla especialidad_mecanico si no existe
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS especialidad_mecanico (
+            id_especialidad INT AUTO_INCREMENT PRIMARY KEY,
+            especialidad VARCHAR(50) NOT NULL  CHECK (especialidad IN ('Mecánica General', 'Electricidad Automotriz', 'Transmisiones', 'Suspensión y Dirección')),
+            descripcion VARCHAR(300) NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT,
+            updated_by INT,
+            deleted BOOLEAN DEFAULT FALSE
+        )
+    """)
+    print("Tabla especialidad_mecanico creada o ya existe.")
+    # Alter table mecanicos para añadir especialidad
+    cursor.execute("""
+            ALTER TABLE mecanicos
+            ADD COLUMN id_especialidad INT NOT NULL,
+            ADD FOREIGN KEY (id_especialidad) REFERENCES especialidad_mecanico(id_especialidad)
+    """)
+    print("Columna id_especialidad añadida a la tabla mecanicos.")
+
+    # Crear tabla tipo_mantenimiento si no existe
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tipo_mantenimiento (
+            id_tipo_mantenimiento INT AUTO_INCREMENT PRIMARY KEY,
+            tipo_mantenimiento VARCHAR(20) NOT NULL CHECK (tipo_mantenimiento IN ('Preventivo', 'Correctivo')),
+            descripcion VARCHAR(300) NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT,
+            updated_by INT,
+            deleted BOOLEAN DEFAULT FALSE
+        )
+    """)
+    print("Tabla tipo_mantenimiento creada o ya existe.")
+    # Alter table mantenimientos para añadir tipo_mantenimiento
+    cursor.execute("""
+            ALTER TABLE mantenimientos
+            ADD COLUMN id_tipo_mantenimiento INT NOT NULL,
+            ADD FOREIGN KEY (id_tipo_mantenimiento) REFERENCES tipo_mantenimiento(id_tipo_mantenimiento)
+    """)
 except mysql.connector.Error as err:
     print(f"Error: {err}")
 
