@@ -242,10 +242,31 @@ def agregar_alumno():
 
 
 def ver_cursos():
+
+
 def opcion1():
     return Agregar_curso()
 def opcion2():
     return agregar_alumno()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def Menú_Principal():

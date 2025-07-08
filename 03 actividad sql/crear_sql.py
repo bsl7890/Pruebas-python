@@ -65,7 +65,7 @@ try:
     
     # Crear tabla usuario si no existe
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS usuario (
+        CREATE TABLE IF NOT EXISTS usuarios (
             id_usuario INT AUTO_INCREMENT PRIMARY KEY,
             nombre VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH(nombre) >= 3 AND nombre REGEXP '^[A-Za-z ]+$'),
             email VARCHAR(100) NOT NULL UNIQUE,
@@ -107,14 +107,13 @@ try:
             fecha DATE NOT NULL,
             id_vehiculo INT NOT NULL,
             id_usuario INT NOT NULL,
-            tecnico_responsable VARCHAR(100) NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
             updated_by INT,
             deleted BOOLEAN DEFAULT FALSE,
             FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo),
-            FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
         )
     """)
     print("Tabla mantenimientos creada o ya existe.")
@@ -129,7 +128,7 @@ try:
             created_by INT,
             updated_by INT,
             deleted BOOLEAN DEFAULT FALSE,
-            FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)            
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)            
        )
     """)
     print("Tabla mecanicos creada o ya existe.")
@@ -205,7 +204,7 @@ try:
     print("Tabla personas creada o ya existe.")
     # Alter table usuario para añadir rut
     cursor.execute("""
-        ALTER TABLE usuario
+        ALTER TABLE usuarios
         ADD COLUMN rut VARCHAR(12) NOT NULL UNIQUE,
         ADD FOREIGN KEY (rut) REFERENCES personas(rut)
     """)
