@@ -104,9 +104,9 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mantenimientos (
             id_mantenimiento INT AUTO_INCREMENT PRIMARY KEY,
-            fecha_mantenimiento DATE NOT NULL CHECK (fecha_mantenimiento <= CURRENT_DATE),
-            id_vehiculo INT NOT NULL,
-            id_usuario INT NOT NULL,
+            fecha_mantenimiento DATE NOT NULL ,
+            id_vehiculo INT NOT NULL CHECK (id_vehiculo > 0),
+            id_usuario INT NOT NULL CHECK (id_usuario > 0),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
