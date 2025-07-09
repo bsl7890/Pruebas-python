@@ -89,8 +89,8 @@ try:
         CREATE TABLE IF NOT EXISTS vehiculos (
             id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
             patente VARCHAR(10) NOT NULL UNIQUE,
-            anio YEAR NOT NULL,
-            kilometraje INT NOT NULL,
+            year YEAR NOT NULL,
+            kilometraje INT NOT NULL CHECK (kilometraje >= 0),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
@@ -104,7 +104,7 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mantenimientos (
             id_mantenimiento INT AUTO_INCREMENT PRIMARY KEY,
-            fecha DATE NOT NULL,
+            fecha_mantenimiento DATE NOT NULL CHECK (fecha_mantenimiento <= CURRENT_DATE),
             id_vehiculo INT NOT NULL,
             id_usuario INT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -121,8 +121,7 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mecanicos (
             id_mecanico INT AUTO_INCREMENT PRIMARY KEY,
-            id_usuario INT NOT NULL,
-            especialidad VARCHAR(50) NOT NULL,
+            id_usuario INT NOT NULL CHECK (id_usuario > 0),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by INT,
@@ -190,7 +189,7 @@ try:
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS personas (
             rut VARCHAR(12) PRIMARY KEY,
-            nombre VARCHAR(100) NOT NULL,
+            nombre VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH(nombre) >= 3),
             fecha_nacimiento DATE NOT NULL,
             telefono VARCHAR(15),
             direccion VARCHAR(255),
