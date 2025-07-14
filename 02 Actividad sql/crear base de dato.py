@@ -21,7 +21,7 @@ try:
 
 
     # Crear tabla tipo_usuarios si no existe
-    cursor.execute("""
+    cursor.execute(""" 
         CREATE TABLE IF NOT EXISTS tipo_usuarios (
             id_tipo INT AUTO_INCREMENT PRIMARY KEY,
             nombre_tipo VARCHAR(50) NOT NULL CHECK (nombre_tipo IN ('Estudiante', 'Profesor', 'Administrador')),

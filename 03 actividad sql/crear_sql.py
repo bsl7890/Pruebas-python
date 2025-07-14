@@ -188,7 +188,7 @@ try:
     # Crear personas si no existe
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS personas (
-            rut VARCHAR(12) PRIMARY KEY,
+            rut VARCHAR(12) PRIMARY KEY NOT NULL,
             nombre VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH(nombre) >= 3),
             fecha_nacimiento DATE NOT NULL,
             telefono VARCHAR(15),
