@@ -2,21 +2,16 @@
 using namespace std;
 
 int main(){
-    int numero;
-    cout << "\nIngrese un numero entero: ";
-    cin >> numero;
-    if (numero % 2 == 0)
+    for (int i = 1; i <=10; i++)
     {
-        cout << "El numero: " << numero << " Es par";
-    }
-    else if (numero % 2 != 0)
-    {
-        cout << "El numero: " << numero << " Es impar";
-    }
-    else
-    {
-        cout << "Ingrese un numero";
+        if (i % 2 == 0)
+        {
+            cout << "El numero: " << i << " Es par " << endl;
+        }
+        else
+        {
+            cout << "El numero: " << i << " Es impar " << endl;
+        }
     }
     return 0;
-    
 }
