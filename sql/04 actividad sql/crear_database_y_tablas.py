@@ -27,6 +27,8 @@ try:
                 updated_by INT,
                 deleted BOOLEAN DEFAULT FALSE
                 );""")
+    # deleted sirve para borrado lógico de registros (no se elimina físicamente)
+    
 
     # Tabla: usuarios (se añade campo created_at con valor por defecto)
     cursor.execute("""--sql CREATE TABLE IF NOT EXISTS usuarios (
