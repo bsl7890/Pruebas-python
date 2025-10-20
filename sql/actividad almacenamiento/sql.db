@@ -1,0 +1,804 @@
+CREATE DATABASE IF NOT EXISTS CRONODOSIS;
+USE CRONODOSIS;
+-- =========================
+-- TABLA: TIPO DE GENERO
+-- =========================
+CREATE TABLE tipo_genero (
+    id_genero INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_genero VARCHAR(20) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    CHECK (CHAR_LENGTH(nombre_genero) >= 1) -- ✅ 1 CHECK por tabla
+);
+
+-- =========================
+-- TABLA: TIPO DE ALERGIAS
+-- =========================
+CREATE TABLE tipo_alergias (
+    id_alergia INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_alergia VARCHAR(100) NOT NULL UNIQUE,
+    descripcion VARCHAR(45) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    CHECK (CHAR_LENGTH(nombre_alergia) >= 3)
+);
+
+-- =========================
+-- TABLA: PERSONAS
+-- =========================
+CREATE TABLE personas (
+    id_persona INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) UNIQUE,
+    rut VARCHAR(20) NOT NULL UNIQUE,
+    telefono VARCHAR(15),
+    fecha_nacimiento DATE,
+    id_genero INT,
+    id_alergia INT,
+    enfermedades_cronicas VARCHAR(200),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_genero) REFERENCES tipo_genero(id_genero),
+    FOREIGN KEY (id_alergia) REFERENCES tipo_alergias(id_alergia),
+    CHECK (CHAR_LENGTH(rut) >= 8)
+);
+
+-- =========================
+-- TABLA: TIPO DE USUARIO
+-- =========================
+CREATE TABLE tipo_usuario (
+    id_tipo_u INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_tipo_u VARCHAR(50) NOT NULL UNIQUE,
+    descripcion_tipo_u VARCHAR(200) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    CHECK (CHAR_LENGTH(nombre_tipo_u) >= 3)
+);
+
+-- =========================
+-- TABLA: USUARIOS
+-- =========================
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_usuario VARCHAR(45) NOT NULL,
+    password_usuario VARCHAR(100) NOT NULL,
+    id_persona INT NOT NULL,
+    tipo_usuario_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_persona) REFERENCES personas(id_persona),
+    FOREIGN KEY (tipo_usuario_id) REFERENCES tipo_usuario(id_tipo_u),
+    CHECK (CHAR_LENGTH(password_usuario) >= 8)
+);
+
+-- =========================
+-- TABLA: TIPO TRATAMIENTOS
+-- =========================
+CREATE TABLE tipo_tratamientos (
+    id_tratamiento INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_tratamiento VARCHAR(100) NOT NULL UNIQUE,
+    descripcion VARCHAR(45) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    CHECK (CHAR_LENGTH(nombre_tratamiento) >= 3)
+);
+
+-- =========================
+-- TABLA: MEDICAMENTOS
+-- =========================
+CREATE TABLE medicamentos (
+    id_medicamento INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_medicamento VARCHAR(100) NOT NULL,
+    frecuencia_tratamiento VARCHAR(50) NOT NULL,
+    duracion_tratamiento VARCHAR(100) NOT NULL,
+    usuario_id INT NOT NULL,
+    id_tratamiento INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_tratamiento) REFERENCES tipo_tratamientos(id_tratamiento),
+    CHECK (CHAR_LENGTH(nombre_medicamento) >= 3)
+);
+
+-- =========================
+-- TABLA: ALARMAS
+-- =========================
+CREATE TABLE alarmas (
+    id_alarma INT AUTO_INCREMENT PRIMARY KEY,
+    hora TIME NOT NULL,
+    fecha DATE NOT NULL,
+    medicamento_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (medicamento_id) REFERENCES medicamentos(id_medicamento),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario),
+    CHECK (hora != '00:00:00')
+);
+
+-- =========================
+-- TABLA: ESTADO PASTILLERO
+-- =========================
+CREATE TABLE estado_pastillero (
+    id_estado INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_estado VARCHAR(50) NOT NULL UNIQUE,
+    descripcion VARCHAR(45) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    CHECK (CHAR_LENGTH(nombre_estado) >= 3)
+);
+
+-- =========================
+-- TABLA: HISTORIAL MEDICAMENTOS
+-- =========================
+CREATE TABLE historial_medicamentos (
+    id_historial INT AUTO_INCREMENT PRIMARY KEY,
+    medicamento_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    cumplimiento_tratamiento ENUM('TOMADO','NO_TOMADO') NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (medicamento_id) REFERENCES medicamentos(id_medicamento),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario),
+    CHECK (cumplimiento_tratamiento IN ('TOMADO','NO_TOMADO'))
+);
+
+-- =========================
+-- TABLA: PASTILLEROS
+-- =========================
+CREATE TABLE pastilleros (
+    id_pastillero INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_pastillero VARCHAR(100) NOT NULL,
+    usuario_id INT NOT NULL UNIQUE,
+    id_estado INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_estado) REFERENCES estado_pastillero(id_estado),
+    CHECK (CHAR_LENGTH(nombre_pastillero) >= 3)
+);
+
+-- =========================
+-- TABLA: TUTOR_USUARIO
+-- =========================
+CREATE TABLE tutor_usuario (
+    id_tutor_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    tutor_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT,
+    deleted BOOLEAN DEFAULT FALSE,
+    UNIQUE (tutor_id, usuario_id),
+    FOREIGN KEY (tutor_id) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario),
+    CHECK (tutor_id > 0 AND usuario_id > 0)
+);
+
+-- ✅ TRIGGERS
+DELIMITER //
+
+CREATE TRIGGER validar_tutor_usuario
+BEFORE INSERT ON tutor_usuario
+FOR EACH ROW
+BEGIN
+    IF NEW.tutor_id = NEW.usuario_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El tutor no puede ser el mismo usuario.';
+    END IF;
+END//
+
+CREATE TRIGGER validar_tutor_usuario_update
+BEFORE UPDATE ON tutor_usuario
+FOR EACH ROW
+BEGIN
+    IF NEW.tutor_id = NEW.usuario_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El tutor no puede ser el mismo usuario.';
+    END IF;
+END//
+
+DELIMITER ;
+
+
+
+DELIMITER //
+
+/* =========================
+   TIPO_GENERO
+   ========================= */
+CREATE PROCEDURE sp_tipo_genero_insertar(
+    IN p_nombre_genero VARCHAR(20),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO tipo_genero(nombre_genero, created_by, deleted)
+    VALUES (p_nombre_genero, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_tipo_genero_borrado_logico(
+    IN p_id_genero INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE tipo_genero
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_genero = p_id_genero;
+END//
+
+CREATE PROCEDURE sp_tipo_genero_listar_activos()
+BEGIN
+    SELECT * FROM tipo_genero WHERE deleted = FALSE ORDER BY nombre_genero;
+END//
+
+CREATE PROCEDURE sp_tipo_genero_listar_todo()
+BEGIN
+    SELECT * FROM tipo_genero ORDER BY nombre_genero;
+END//
+
+/* =========================
+   TIPO_ALERGIAS
+   ========================= */
+CREATE PROCEDURE sp_tipo_alergias_insertar(
+    IN p_nombre_alergia VARCHAR(100),
+    IN p_descripcion VARCHAR(45),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO tipo_alergias(nombre_alergia, descripcion, created_by, deleted)
+    VALUES (p_nombre_alergia, p_descripcion, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_tipo_alergias_borrado_logico(
+    IN p_id_alergia INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE tipo_alergias
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_alergia = p_id_alergia;
+END//
+
+CREATE PROCEDURE sp_tipo_alergias_listar_activos()
+BEGIN
+    SELECT * FROM tipo_alergias WHERE deleted = FALSE ORDER BY nombre_alergia;
+END//
+
+CREATE PROCEDURE sp_tipo_alergias_listar_todo()
+BEGIN
+    SELECT * FROM tipo_alergias ORDER BY nombre_alergia;
+END//
+
+/* =========================
+   PERSONAS
+   ========================= */
+CREATE PROCEDURE sp_personas_insertar(
+    IN p_nombre VARCHAR(100),
+    IN p_correo VARCHAR(100),
+    IN p_rut VARCHAR(20),
+    IN p_telefono VARCHAR(15),
+    IN p_fecha_nacimiento DATE,
+    IN p_id_genero INT,
+    IN p_id_alergia INT,
+    IN p_enfermedades_cronicas VARCHAR(200),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO personas(
+        nombre, correo, rut, telefono, fecha_nacimiento,
+        id_genero, id_alergia, enfermedades_cronicas, created_by, deleted
+    ) VALUES (
+        p_nombre, p_correo, p_rut, p_telefono, p_fecha_nacimiento,
+        p_id_genero, p_id_alergia, p_enfermedades_cronicas, p_created_by, FALSE
+    );
+END//
+
+CREATE PROCEDURE sp_personas_borrado_logico(
+    IN p_id_persona INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE personas
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_persona = p_id_persona;
+END//
+
+CREATE PROCEDURE sp_personas_listar_activos()
+BEGIN
+    SELECT * FROM personas WHERE deleted = FALSE ORDER BY nombre;
+END//
+
+CREATE PROCEDURE sp_personas_listar_todo()
+BEGIN
+    SELECT * FROM personas ORDER BY nombre;
+END//
+
+/* =========================
+   TIPO_USUARIO
+   ========================= */
+CREATE PROCEDURE sp_tipo_usuario_insertar(
+    IN p_nombre_tipo_u VARCHAR(50),
+    IN p_descripcion_tipo_u VARCHAR(200),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO tipo_usuario(nombre_tipo_u, descripcion_tipo_u, created_by, deleted)
+    VALUES (p_nombre_tipo_u, p_descripcion_tipo_u, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_tipo_usuario_borrado_logico(
+    IN p_id_tipo_u INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE tipo_usuario
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_tipo_u = p_id_tipo_u;
+END//
+
+CREATE PROCEDURE sp_tipo_usuario_listar_activos()
+BEGIN
+    SELECT * FROM tipo_usuario WHERE deleted = FALSE ORDER BY nombre_tipo_u;
+END//
+
+CREATE PROCEDURE sp_tipo_usuario_listar_todo()
+BEGIN
+    SELECT * FROM tipo_usuario ORDER BY nombre_tipo_u;
+END//
+
+/* =========================
+   USUARIOS
+   ========================= */
+CREATE PROCEDURE sp_usuarios_insertar(
+    IN p_nombre_usuario VARCHAR(45),
+    IN p_password_usuario VARCHAR(100),
+    IN p_id_persona INT,
+    IN p_tipo_usuario_id INT,
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO usuarios(
+        nombre_usuario, password_usuario, id_persona, tipo_usuario_id, created_by, deleted
+    ) VALUES (
+        p_nombre_usuario, p_password_usuario, p_id_persona, p_tipo_usuario_id, p_created_by, FALSE
+    );
+END//
+
+CREATE PROCEDURE sp_usuarios_borrado_logico(
+    IN p_id_usuario INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE usuarios
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_usuario = p_id_usuario;
+END//
+
+CREATE PROCEDURE sp_usuarios_listar_activos()
+BEGIN
+    SELECT * FROM usuarios WHERE deleted = FALSE ORDER BY nombre_usuario;
+END//
+
+CREATE PROCEDURE sp_usuarios_listar_todo()
+BEGIN
+    SELECT * FROM usuarios ORDER BY nombre_usuario;
+END//
+
+/* =========================
+   TIPO_TRATAMIENTOS
+   ========================= */
+CREATE PROCEDURE sp_tipo_tratamientos_insertar(
+    IN p_nombre_tratamiento VARCHAR(100),
+    IN p_descripcion VARCHAR(45),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO tipo_tratamientos(nombre_tratamiento, descripcion, created_by, deleted)
+    VALUES (p_nombre_tratamiento, p_descripcion, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_tipo_tratamientos_borrado_logico(
+    IN p_id_tratamiento INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE tipo_tratamientos
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_tratamiento = p_id_tratamiento;
+END//
+
+CREATE PROCEDURE sp_tipo_tratamientos_listar_activos()
+BEGIN
+    SELECT * FROM tipo_tratamientos WHERE deleted = FALSE ORDER BY nombre_tratamiento;
+END//
+
+CREATE PROCEDURE sp_tipo_tratamientos_listar_todo()
+BEGIN
+    SELECT * FROM tipo_tratamientos ORDER BY nombre_tratamiento;
+END//
+
+/* =========================
+   MEDICAMENTOS
+   ========================= */
+CREATE PROCEDURE sp_medicamentos_insertar(
+    IN p_nombre_medicamento VARCHAR(100),
+    IN p_frecuencia_tratamiento VARCHAR(50),
+    IN p_duracion_tratamiento VARCHAR(100),
+    IN p_usuario_id INT,
+    IN p_id_tratamiento INT,
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO medicamentos(
+        nombre_medicamento, frecuencia_tratamiento, duracion_tratamiento,
+        usuario_id, id_tratamiento, created_by, deleted
+    ) VALUES (
+        p_nombre_medicamento, p_frecuencia_tratamiento, p_duracion_tratamiento,
+        p_usuario_id, p_id_tratamiento, p_created_by, FALSE
+    );
+END//
+
+CREATE PROCEDURE sp_medicamentos_borrado_logico(
+    IN p_id_medicamento INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE medicamentos
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_medicamento = p_id_medicamento;
+END//
+
+CREATE PROCEDURE sp_medicamentos_listar_activos()
+BEGIN
+    SELECT * FROM medicamentos WHERE deleted = FALSE ORDER BY nombre_medicamento;
+END//
+
+CREATE PROCEDURE sp_medicamentos_listar_todo()
+BEGIN
+    SELECT * FROM medicamentos ORDER BY nombre_medicamento;
+END//
+
+/* =========================
+   ALARMAS
+   ========================= */
+CREATE PROCEDURE sp_alarmas_insertar(
+    IN p_hora TIME,
+    IN p_fecha DATE,
+    IN p_medicamento_id INT,
+    IN p_usuario_id INT,
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO alarmas(hora, fecha, medicamento_id, usuario_id, created_by, deleted)
+    VALUES (p_hora, p_fecha, p_medicamento_id, p_usuario_id, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_alarmas_borrado_logico(
+    IN p_id_alarma INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE alarmas
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_alarma = p_id_alarma;
+END//
+
+CREATE PROCEDURE sp_alarmas_listar_activos()
+BEGIN
+    SELECT * FROM alarmas WHERE deleted = FALSE ORDER BY fecha, hora;
+END//
+
+CREATE PROCEDURE sp_alarmas_listar_todo()
+BEGIN
+    SELECT * FROM alarmas ORDER BY fecha, hora;
+END//
+
+/* =========================
+   ESTADO_PASTILLERO
+   ========================= */
+CREATE PROCEDURE sp_estado_pastillero_insertar(
+    IN p_nombre_estado VARCHAR(50),
+    IN p_descripcion VARCHAR(45),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO estado_pastillero(nombre_estado, descripcion, created_by, deleted)
+    VALUES (p_nombre_estado, p_descripcion, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_estado_pastillero_borrado_logico(
+    IN p_id_estado INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE estado_pastillero
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_estado = p_id_estado;
+END//
+
+CREATE PROCEDURE sp_estado_pastillero_listar_activos()
+BEGIN
+    SELECT * FROM estado_pastillero WHERE deleted = FALSE ORDER BY nombre_estado;
+END//
+
+CREATE PROCEDURE sp_estado_pastillero_listar_todo()
+BEGIN
+    SELECT * FROM estado_pastillero ORDER BY nombre_estado;
+END//
+
+/* =========================
+   HISTORIAL_MEDICAMENTOS
+   ========================= */
+CREATE PROCEDURE sp_historial_medicamentos_insertar(
+    IN p_medicamento_id INT,
+    IN p_usuario_id INT,
+    IN p_fecha DATE,
+    IN p_hora TIME,
+    IN p_cumplimiento_tratamiento VARCHAR(10),
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO historial_medicamentos(
+        medicamento_id, usuario_id, fecha, hora, cumplimiento_tratamiento, created_by, deleted
+    ) VALUES (
+        p_medicamento_id, p_usuario_id, p_fecha, p_hora, p_cumplimiento_tratamiento, p_created_by, FALSE
+    );
+END//
+
+CREATE PROCEDURE sp_historial_medicamentos_borrado_logico(
+    IN p_id_historial INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE historial_medicamentos
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_historial = p_id_historial;
+END//
+
+CREATE PROCEDURE sp_historial_medicamentos_listar_activos()
+BEGIN
+    SELECT * FROM historial_medicamentos WHERE deleted = FALSE ORDER BY fecha, hora;
+END//
+
+CREATE PROCEDURE sp_historial_medicamentos_listar_todo()
+BEGIN
+    SELECT * FROM historial_medicamentos ORDER BY fecha, hora;
+END//
+
+/* =========================
+   PASTILLEROS
+   ========================= */
+CREATE PROCEDURE sp_pastilleros_insertar(
+    IN p_nombre_pastillero VARCHAR(100),
+    IN p_usuario_id INT,
+    IN p_id_estado INT,
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO pastilleros(nombre_pastillero, usuario_id, id_estado, created_by, deleted)
+    VALUES (p_nombre_pastillero, p_usuario_id, p_id_estado, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_pastilleros_borrado_logico(
+    IN p_id_pastillero INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE pastilleros
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_pastillero = p_id_pastillero;
+END//
+
+CREATE PROCEDURE sp_pastilleros_listar_activos()
+BEGIN
+    SELECT * FROM pastilleros WHERE deleted = FALSE ORDER BY nombre_pastillero;
+END//
+
+CREATE PROCEDURE sp_pastilleros_listar_todo()
+BEGIN
+    SELECT * FROM pastilleros ORDER BY nombre_pastillero;
+END//
+
+/* =========================
+   TUTOR_USUARIO
+   ========================= */
+CREATE PROCEDURE sp_tutor_usuario_insertar(
+    IN p_tutor_id INT,
+    IN p_usuario_id INT,
+    IN p_created_by INT
+)
+BEGIN
+    INSERT INTO tutor_usuario(tutor_id, usuario_id, created_by, deleted)
+    VALUES (p_tutor_id, p_usuario_id, p_created_by, FALSE);
+END//
+
+CREATE PROCEDURE sp_tutor_usuario_borrado_logico(
+    IN p_id_tutor_usuario INT,
+    IN p_updated_by INT
+)
+BEGIN
+    UPDATE tutor_usuario
+    SET deleted = TRUE,
+        updated_by = p_updated_by,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id_tutor_usuario = p_id_tutor_usuario;
+END//
+
+CREATE PROCEDURE sp_tutor_usuario_listar_activos()
+BEGIN
+    SELECT * FROM tutor_usuario WHERE deleted = FALSE ORDER BY id_tutor_usuario;
+END//
+
+CREATE PROCEDURE sp_tutor_usuario_listar_todo()
+BEGIN
+    SELECT * FROM tutor_usuario ORDER BY id_tutor_usuario;
+END//
+
+DELIMITER ;
+
+-- =========================
+-- TIPO_GENERO
+-- =========================
+CALL sp_tipo_genero_insertar('Masculino', 1);
+CALL sp_tipo_genero_insertar('Femenino', 1);
+CALL sp_tipo_genero_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- TIPO_ALERGIAS
+-- =========================
+CALL sp_tipo_alergias_insertar('Polen', 'Alergia estacional', 1);
+CALL sp_tipo_alergias_insertar('Lácteos', 'Intolerancia a la lactosa', 1);
+CALL sp_tipo_alergias_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- PERSONAS
+-- =========================
+CALL sp_personas_insertar('Juan Pérez', 'juan@gmail.com', '12345678-9', '987654321', '2000-05-20', 1, 2, 'Asma', 1);
+CALL sp_personas_insertar('María López', 'maria@gmail.com', '98765432-1', '912345678', '1998-08-15', 2, NULL, NULL, 1);
+CALL sp_personas_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- TIPO_USUARIO
+-- =========================
+CALL sp_tipo_usuario_insertar('Administrador', 'Control total del sistema', 1);
+CALL sp_tipo_usuario_insertar('Paciente', 'Usuario con medicamentos asignados', 1);
+CALL sp_tipo_usuario_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- USUARIOS
+-- =========================
+CALL sp_usuarios_insertar('admin', 'admin1234', 1, 1, 1);      -- id_usuario = 1
+CALL sp_usuarios_insertar('juanito', 'clave12345', 2, 2, 1);  -- id_usuario = 2
+CALL sp_usuarios_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- TIPO_TRATAMIENTOS
+-- =========================
+CALL sp_tipo_tratamientos_insertar('Antibióticos', 'Tratamiento de infecciones', 1);
+CALL sp_tipo_tratamientos_insertar('Vitaminas', 'Suplemento diario', 1);
+CALL sp_tipo_tratamientos_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- MEDICAMENTOS
+-- =========================
+CALL sp_medicamentos_insertar('Amoxicilina', 'Cada 8 horas', '7 días', 1, 1, 1);
+CALL sp_medicamentos_insertar('Vitamina C', 'Cada 24 horas', '1 mes', 1, 2, 1);
+CALL sp_medicamentos_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- ALARMAS
+-- =========================
+CALL sp_alarmas_insertar('08:00:00', '2025-10-20', 1, 1, 1);
+CALL sp_alarmas_insertar('20:00:00', '2025-10-20', 1, 1, 1);
+CALL sp_alarmas_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- ESTADO_PASTILLERO
+-- =========================
+CALL sp_estado_pastillero_insertar('Lleno', 'Todas las dosis cargadas', 1);
+CALL sp_estado_pastillero_insertar('Vacío', 'Sin medicamentos', 1);
+CALL sp_estado_pastillero_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- HISTORIAL_MEDICAMENTOS
+-- =========================
+CALL sp_historial_medicamentos_insertar(1, 1, '2025-10-20', '08:00:00', 'TOMADO', 1);
+CALL sp_historial_medicamentos_insertar(1, 1, '2025-10-21', '08:00:00', 'NO_TOMADO', 1);
+CALL sp_historial_medicamentos_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- PASTILLEROS
+-- =========================
+CALL sp_pastilleros_insertar('Pastillero Azul', 1, 1, 1);
+CALL sp_pastilleros_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- TUTOR_USUARIO
+-- =========================
+CALL sp_tutor_usuario_insertar(1, 2, 1);
+CALL sp_tutor_usuario_listar_activos();
+-- NO BORRAR AUN
+
+-- =========================
+-- AHORA BORRADOS LOGICOS
+-- =========================
+CALL sp_tipo_genero_borrado_logico(1, 2);
+CALL sp_tipo_alergias_borrado_logico(1, 2);
+CALL sp_personas_borrado_logico(2, 2);
+CALL sp_tipo_usuario_borrado_logico(2, 2);
+CALL sp_usuarios_borrado_logico(2, 2);
+CALL sp_tipo_tratamientos_borrado_logico(2, 2);
+CALL sp_medicamentos_borrado_logico(2, 2);
+CALL sp_alarmas_borrado_logico(2, 2);
+CALL sp_estado_pastillero_borrado_logico(2, 2);
+CALL sp_historial_medicamentos_borrado_logico(2, 2);
+CALL sp_pastilleros_borrado_logico(1, 2);
+CALL sp_tutor_usuario_borrado_logico(1, 2);
+
