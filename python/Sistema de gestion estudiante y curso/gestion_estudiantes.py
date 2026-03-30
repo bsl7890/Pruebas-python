@@ -1,4 +1,3 @@
-#HOLA
 import os
 estudiante =[]
 def opcion1():
@@ -101,7 +100,7 @@ def menu_estudiantes():
     while True:
         os.system("cls")
         try:
-            print("Bienvenido a la gestión de estudiantes")
+            print("Bienvenido a la gestión de estudiantes\n")
             print("|-------------------------------------|")
             print("|         Gestion de estudiantes      |")
             print("|-------------------------------------|")
