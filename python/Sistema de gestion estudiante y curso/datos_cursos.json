@@ -1,0 +1,14 @@
+[
+  {
+    "asignatura": "Logística",
+    "horario": "Diurno",
+    "docente": "pablo escobar",
+    "id": 1
+  },
+  {
+    "id": 2,
+    "asignatura": "Finanzas",
+    "horario": "Diurno",
+    "docente": "pedro pascal"
+  }
+]

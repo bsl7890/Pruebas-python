@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "id_estudiante": 1,
+    "nombre_estudiante": "camilo",
+    "id_curso": 1,
+    "nombre_curso": "Logística",
+    "fecha": "20/04/2025"
+  },
+  {
+    "id": 2,
+    "id_estudiante": 2,
+    "nombre_estudiante": "benjamin",
+    "id_curso": 2,
+    "nombre_curso": "Finanzas",
+    "fecha": "04/03/2026"
+  }
+]
